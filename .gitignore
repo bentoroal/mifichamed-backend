@@ -1,0 +1,5 @@
+Comandos varios.txt
+venv/
+__pycache__/
+.env
+mifichamed.db

@@ -1,0 +1,12 @@
+# Este parte del proyecto lee variables del entorno (.env)
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv() #Carga el archivo .env
+#os.getenv obtiene las variables de conexion db,  claves jwt, y tiempo de expiracion
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
