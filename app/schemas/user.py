@@ -1,6 +1,7 @@
 #Los schemas es el "modelo" pero en la perspectiva de la api, no de la db
 #Este archivo Define cómo la API recibe y devuelve datos.
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 #Datos al crear usuario
 class UserCreate(BaseModel):
@@ -24,4 +25,5 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    refresh_token: Optional[str] = None
 

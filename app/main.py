@@ -3,6 +3,8 @@ from fastapi import FastAPI
 from app.db.base import Base
 from app.db.session import engine
 from app.routers import auth
+from app.routers import conditions, medications, symptoms, user_conditions, user_symptoms, condition_treatments
+import app.models
 
 #crea las tablas
 Base.metadata.create_all(bind=engine)
@@ -12,6 +14,12 @@ app = FastAPI()
 
 #Registra Rutas
 app.include_router(auth.router)
+app.include_router(conditions.router)
+app.include_router(medications.router)
+app.include_router(symptoms.router)
+app.include_router(user_conditions.router)
+app.include_router(user_symptoms.router)
+app.include_router(condition_treatments.router)
 
 #Crea el endpoint raiz
 @app.get("/")
