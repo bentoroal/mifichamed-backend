@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.base import Base
 
@@ -13,3 +14,5 @@ class ConditionCatalog(Base):
     created_by_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
 
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    user_conditions = relationship("UserCondition", back_populates="condition")

@@ -4,3 +4,4 @@ __pycache__/
 .env
 mifichamed.db
 repomix-output.xml
+repomix-output.txt

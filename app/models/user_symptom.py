@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, Date, Boolean, DateTime, ForeignKey, Text
+from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.base import Base
 
@@ -24,3 +25,8 @@ class UserSymptom(Base):
     )
 
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    #Relaciones para conectar con el usuario que experimenta el síntoma, el síntoma específico del catálogo de síntomas y la condición médica asociada a este síntoma (si existe) para ayudar a identificar posibles relaciones entre síntomas y condiciones médicas. Esto también permite acceder fácilmente a los datos relacionados al consultar los síntomas de un usuario o las condiciones médicas asociadas a un síntoma específico.
+    user = relationship("User", back_populates="symptoms")
+    symptom = relationship("SymptomCatalog")
+    linked_condition = relationship("UserCondition", back_populates="symptoms")

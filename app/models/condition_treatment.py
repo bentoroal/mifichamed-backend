@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Date, DateTime, ForeignKey, Text
+from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.base import Base
 
@@ -29,3 +30,6 @@ class ConditionTreatment(Base):
     notes = Column(Text, nullable=True)
 
     created_at = Column(DateTime, default=datetime.utcnow)
+    #Relaciones para conectar con la condición médica asociada a este tratamiento y el medicamento utilizado en el tratamiento
+    user_condition = relationship("UserCondition", back_populates="treatments")
+    medication = relationship("MedicationCatalog")
