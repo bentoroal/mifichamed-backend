@@ -1,4 +1,5 @@
 from .user import User
+from .user_profile import UserProfile
 from .condition import ConditionCatalog
 from .symptom import SymptomCatalog
 from .medication import MedicationCatalog

@@ -23,3 +23,11 @@ class ConditionTreatmentResponse(ConditionTreatmentBase):
 
     class Config:
         from_attributes = True
+
+class ConditionTreatmentUpdate(BaseModel):
+    medication_id: Optional[int] = None
+    dosage: Optional[str] = None
+    frequency: Optional[str] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    notes: Optional[str] = None

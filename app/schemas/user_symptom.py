@@ -4,7 +4,6 @@ from datetime import date, datetime
 
 
 class UserSymptomBase(BaseModel):
-    user_id: int
     symptom_id: int
     start_date: Optional[date] = None
     severity: Optional[int] = None
@@ -16,10 +15,16 @@ class UserSymptomBase(BaseModel):
 class UserSymptomCreate(UserSymptomBase):
     pass
 
-
 class UserSymptomResponse(UserSymptomBase):
     id: int
+    user_id: int
     created_at: datetime
 
     class Config:
         from_attributes = True
+
+class UserSymptomUpdate(BaseModel):
+    start_date: Optional[date] = None
+    severity: Optional[int] = None
+    is_current: Optional[bool] = None
+    notes: Optional[str] = None

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
-
+from app.schemas.user_profile import UserProfileOut
 
 class MedicationOut(BaseModel):
     id: int
@@ -56,10 +56,9 @@ class UserSymptomOut(BaseModel):
 
 
 class DashboardOut(BaseModel):
-    id: int
-    email: str
-    conditions: List[UserConditionOut]
-    symptoms: List[UserSymptomOut]
+    profile: UserProfileOut | None
+    active_conditions: list[UserConditionOut]
+    active_symptoms: list[UserSymptomOut]
 
     class Config:
         from_attributes = True

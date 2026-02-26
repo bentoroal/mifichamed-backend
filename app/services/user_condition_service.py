@@ -3,12 +3,18 @@ from app.models.user_condition import UserCondition
 from typing import Optional
 
 
-def get_user_conditions(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(UserCondition).offset(skip).limit(limit).all()
+def get_user_conditions(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+    # return paginated list of conditions for a specific user
+    return db.query(UserCondition).filter(
+        UserCondition.user_id == user_id
+    ).offset(skip).limit(limit).all()
 
 
-def get_user_condition(db: Session, uc_id: int):
-    return db.query(UserCondition).filter(UserCondition.id == uc_id).first()
+def get_user_condition(db: Session, uc_id: int, user_id: int):
+    return db.query(UserCondition).filter(
+        UserCondition.id == uc_id,
+        UserCondition.user_id == user_id
+    ).first()
 
 
 def create_user_condition(db: Session, user_id: int, condition_id: int, diagnosis_date: Optional[str] = None, status: Optional[str] = "active", notes: Optional[str] = None):
@@ -19,8 +25,8 @@ def create_user_condition(db: Session, user_id: int, condition_id: int, diagnosi
     return item
 
 
-def delete_user_condition(db: Session, uc_id: int):
-    obj = get_user_condition(db, uc_id)
+def delete_user_condition(db: Session, uc_id: int, user_id: int):
+    obj = get_user_condition(db, uc_id, user_id)
     if not obj:
         return None
     db.delete(obj)
