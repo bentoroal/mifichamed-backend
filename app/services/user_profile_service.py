@@ -7,12 +7,22 @@ def get_profile(db: Session, user_id: int):
     return db.query(UserProfile).filter(UserProfile.user_id == user_id).first()
 
 
-def create_profile(db: Session, user_id: int, full_name: str, birth_date: Optional[str] = None, sex: Optional[str] = None):
+def create_profile(
+        db: Session,
+        user_id: int, 
+        full_name: str, 
+        birth_date: Optional[str] = None, 
+        sex: Optional[str] = None,
+        weight: Optional[int] = None,
+        height: Optional[int] = None):
+    
     item = UserProfile(
         user_id=user_id,
         full_name=full_name,
         birth_date=birth_date,
         sex=sex,
+        weight=weight,
+        height=height
     )
     db.add(item)
     db.commit()

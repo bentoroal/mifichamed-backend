@@ -4,6 +4,7 @@ from app.models.user_condition import UserCondition
 from app.models.condition_treatment import ConditionTreatment
 from app.models.user_symptom import UserSymptom
 from app.models.user_profile import UserProfile
+from app.models.enums import ConditionStatus
 from datetime import date
 
 def get_dashboard(db: Session, user_id: int):
@@ -21,7 +22,7 @@ def get_dashboard(db: Session, user_id: int):
         )
         .filter(
             UserCondition.user_id == user_id,
-            UserCondition.status == "active"
+            UserCondition.status == ConditionStatus.ACTIVE
         )
         .all()
     )

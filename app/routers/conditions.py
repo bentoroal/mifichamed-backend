@@ -5,6 +5,7 @@ from app.core.security import get_current_user
 from app.models.user import User
 from app.schemas.condition import ConditionCatalogCreate, ConditionCatalogResponse
 from app.services.condition_service import get_conditions, get_condition, create_condition, delete_condition
+from app.models.enums import ConditionCategory
 from app.db.session import get_db
 
 router = APIRouter(prefix="/conditions", tags=["Conditions"])
@@ -26,7 +27,7 @@ def create(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return create_condition(db, cond.name, current_user.id, cond.is_custom)
+    return create_condition(db, cond.name, cond.category, current_user.id, cond.is_custom)
 
 
 @router.get("/{condition_id}", response_model=ConditionCatalogResponse)

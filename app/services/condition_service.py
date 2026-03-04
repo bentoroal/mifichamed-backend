@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.condition import ConditionCatalog
+from app.models.enums import ConditionCategory
 
 
 def get_conditions(db: Session, user_id: int | None = None, skip: int = 0, limit: int = 100):
@@ -28,9 +29,10 @@ def get_condition(db: Session, condition_id: int, user_id: int | None = None):
     return query.first()
 
 
-def create_condition(db: Session, name: str, user_id: int, is_custom: bool = False):
+def create_condition(db: Session, name: str, category: ConditionCategory, user_id: int, is_custom: bool = False):
     cond = ConditionCatalog(
         name=name,
+        category=category,
         is_custom=is_custom,
         created_by_user_id=user_id if is_custom else None,
     )

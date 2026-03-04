@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, Date, String, DateTime, ForeignKey, Text
+from sqlalchemy import Column, Integer, Date, String, DateTime, ForeignKey, Text, Enum as SAEnum
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.base import Base
-
+from app.models.enums import ConditionStatus
 
 class UserCondition(Base):
     __tablename__ = "user_conditions"
@@ -14,7 +14,11 @@ class UserCondition(Base):
 
     diagnosis_date = Column(Date, nullable=True)
 
-    status = Column(String, default="active")  # active, resolved, cronic
+    status = Column(
+        SAEnum(ConditionStatus), 
+        default=ConditionStatus.ACTIVE, 
+        nullable=False
+    )
     notes = Column(Text, nullable=True) # notas adicionales del usuario sobre la condición
 
     created_at = Column(DateTime, default=datetime.utcnow)

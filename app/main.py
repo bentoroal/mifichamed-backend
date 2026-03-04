@@ -1,5 +1,6 @@
 #Este archivo crea la app, las tablas, rutas y endpoint raiz
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.db.base import Base
 from app.db.session import engine
 from app.routers import auth, conditions, medications, symptoms, user_conditions, user_symptoms, condition_treatments, dashboard, user_profile
@@ -11,6 +12,19 @@ Base.metadata.create_all(bind=engine)
 
 #Crea la App
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",  # tu frontend en local
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # puedes poner ["*"] para pruebas
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 #Registra Rutas
 app.include_router(auth.router)

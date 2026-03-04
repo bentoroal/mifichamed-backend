@@ -1,13 +1,14 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import date, datetime
+from app.models.enums import ConditionStatus
 
 
 class UserConditionBase(BaseModel):
     user_id: int
     condition_id: int
     diagnosis_date: Optional[date] = None
-    status: Optional[str] = "active"
+    status: Optional[ConditionStatus] = ConditionStatus.ACTIVE
     notes: Optional[str] = None
 
 

@@ -7,6 +7,8 @@ class UserProfileBase(BaseModel):
     full_name: str
     birth_date: Optional[date] = None
     sex: Optional[str] = None
+    weight: Optional[int] = None
+    height: Optional[int] = None
 
 
 class UserProfileCreate(UserProfileBase):
@@ -17,6 +19,8 @@ class UserProfileUpdate(BaseModel):
     full_name: Optional[str] = None
     birth_date: Optional[date] = None
     sex: Optional[str] = None
+    weight: Optional[int] = None
+    height: Optional[int] = None
 
 
 class UserProfileOut(UserProfileBase):

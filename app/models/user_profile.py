@@ -12,5 +12,7 @@ class UserProfile(Base):
     full_name = Column(String, nullable=False)
     birth_date = Column(Date, nullable=True)
     sex = Column(String, nullable=True)
+    weight = Column(Integer, nullable=True)
+    height = Column(Integer, nullable=True)
 
     user = relationship("User", back_populates="profile")
