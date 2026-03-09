@@ -1,15 +1,15 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import date, datetime
 
 
 class UserSymptomBase(BaseModel):
     symptom_id: int
     start_date: Optional[date] = None
+    end_date: Optional[date] = None
     severity: Optional[int] = None
     is_current: Optional[bool] = True
     notes: Optional[str] = None
-    linked_condition_id: Optional[int] = None
 
 
 class UserSymptomCreate(UserSymptomBase):
@@ -25,6 +25,7 @@ class UserSymptomResponse(UserSymptomBase):
 
 class UserSymptomUpdate(BaseModel):
     start_date: Optional[date] = None
+    end_date: Optional[date] = None
     severity: Optional[int] = None
     is_current: Optional[bool] = None
     notes: Optional[str] = None

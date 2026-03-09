@@ -20,5 +20,3 @@ class ConditionStatus(str, enum.Enum):
     CHRONIC = "chronic"
     RESOLVED = "resolved"
     REMISSION = "remission"
-    RECURRENT = "recurrent"
-    OBSERVATION = "observation"

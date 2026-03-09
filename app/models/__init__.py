@@ -5,4 +5,5 @@ from .symptom import SymptomCatalog
 from .medication import MedicationCatalog
 from .user_condition import UserCondition
 from .user_symptom import UserSymptom
+from .user_symptom_daily import UserSymptomDaily
 from .condition_treatment import ConditionTreatment

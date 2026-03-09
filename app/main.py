@@ -5,7 +5,7 @@ from app.db.base import Base
 from app.db.session import engine
 from app.routers import auth, conditions, medications, symptoms, user_conditions, user_symptoms, condition_treatments, dashboard, user_profile
 
-import app.models
+import app.models  # imported so that SQLAlchemy model classes are registered, unused variable
 
 #crea las tablas
 Base.metadata.create_all(bind=engine)

@@ -17,15 +17,15 @@ def get_user_symptom(db: Session, us_id: int, user_id: int):
     ).first()
 
 
-def create_user_symptom(db: Session, user_id: int, symptom_id: int, start_date: Optional[str] = None, severity: Optional[int] = None, is_current: bool = True, notes: Optional[str] = None, linked_condition_id: Optional[int] = None):
+def create_user_symptom(db: Session, user_id: int, symptom_id: int, start_date: Optional[str] = None, end_date: Optional[str] = None, severity: Optional[int] = None, is_current: bool = True, notes: Optional[str] = None):
     item = UserSymptom(
         user_id=user_id,
         symptom_id=symptom_id,
         start_date=start_date,
+        end_date=end_date,
         severity=severity,
         is_current=is_current,
         notes=notes,
-        linked_condition_id=linked_condition_id,
     )
     db.add(item)
     db.commit()

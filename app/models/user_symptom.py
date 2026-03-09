@@ -13,20 +13,15 @@ class UserSymptom(Base):
     symptom_id = Column(Integer, ForeignKey("symptoms_catalog.id"), nullable=False)
 
     start_date = Column(Date, nullable=True) # Fecha en la que el usuario comenzó a experimentar el síntoma
+    end_date = Column(Date, nullable=True) # Fecha en la que el síntoma se resolvió
     severity = Column(Integer, nullable=True)  # Escala de 1-10
     is_current = Column(Boolean, default=True) # Indica si el síntoma sigue presente o ya se resolvió
 
     notes = Column(Text, nullable=True) # Notas adicionales del usuario sobre el síntoma, como desencadenantes, alivios, etc.
 
-    linked_condition_id = Column(
-        Integer,
-        ForeignKey("user_conditions.id"),
-        nullable=True
-    )
-
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    #Relaciones para conectar con el usuario que experimenta el síntoma, el síntoma específico del catálogo de síntomas y la condición médica asociada a este síntoma (si existe) para ayudar a identificar posibles relaciones entre síntomas y condiciones médicas. Esto también permite acceder fácilmente a los datos relacionados al consultar los síntomas de un usuario o las condiciones médicas asociadas a un síntoma específico.
+    # Relaciones para conectar con el usuario que experimenta el síntoma y el síntoma específico del catálogo de síntomas
     user = relationship("User", back_populates="symptoms")
     symptom = relationship("SymptomCatalog")
-    linked_condition = relationship("UserCondition", back_populates="symptoms")
+    daily_records = relationship("UserSymptomDaily", back_populates="user_symptom", cascade="all, delete-orphan")

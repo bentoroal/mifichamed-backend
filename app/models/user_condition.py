@@ -13,6 +13,7 @@ class UserCondition(Base):
     condition_id = Column(Integer, ForeignKey("conditions_catalog.id"), nullable=False)
 
     diagnosis_date = Column(Date, nullable=True)
+    end_date = Column(Date, nullable=True) # Fecha de término o recuperación de la condición
 
     status = Column(
         SAEnum(ConditionStatus), 
@@ -23,8 +24,7 @@ class UserCondition(Base):
 
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    #Relaciones para acceder a los datos relacionados con el usuario, la condición y los tratamientos asociados a esta condición
+    # Relaciones para acceder a los datos relacionados con el usuario, la condición y los tratamientos asociados a esta condición
     user = relationship("User", back_populates="conditions")
     condition = relationship("ConditionCatalog", back_populates="user_conditions")
     treatments = relationship("ConditionTreatment", back_populates="user_condition", cascade="all, delete")
-    symptoms = relationship("UserSymptom", back_populates="linked_condition")

@@ -8,6 +8,7 @@ class UserConditionBase(BaseModel):
     user_id: int
     condition_id: int
     diagnosis_date: Optional[date] = None
+    end_date: Optional[date] = None
     status: Optional[ConditionStatus] = ConditionStatus.ACTIVE
     notes: Optional[str] = None
 

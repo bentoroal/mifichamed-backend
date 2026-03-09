@@ -24,6 +24,12 @@ from .user_symptom import (
     UserSymptomCreate,
     UserSymptomResponse,
 )
+from .user_symptom_daily import (
+    UserSymptomDailyBase,
+    UserSymptomDailyCreate,
+    UserSymptomDailyResponse,
+    UserSymptomDailyUpdate,
+)
 from .condition_treatment import (
     ConditionTreatmentBase,
     ConditionTreatmentCreate,
@@ -50,6 +56,10 @@ __all__ = [
     "UserSymptomBase",
     "UserSymptomCreate",
     "UserSymptomResponse",
+    "UserSymptomDailyBase",
+    "UserSymptomDailyCreate",
+    "UserSymptomDailyResponse",
+    "UserSymptomDailyUpdate",
     "ConditionTreatmentBase",
     "ConditionTreatmentCreate",
     "ConditionTreatmentResponse",
