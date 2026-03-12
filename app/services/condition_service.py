@@ -2,7 +2,6 @@ from sqlalchemy.orm import Session
 from app.models.condition import ConditionCatalog
 from app.models.enums import ConditionCategory
 
-
 def get_conditions(db: Session, user_id: int | None = None, skip: int = 0, limit: int = 100):
     query = db.query(ConditionCatalog)
     if user_id is not None:

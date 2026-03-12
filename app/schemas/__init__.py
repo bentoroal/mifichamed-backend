@@ -36,6 +36,26 @@ from .condition_treatment import (
     ConditionTreatmentResponse,
 )
 
+from .allergy import (
+    AllergyCatalogBase,
+    AllergyCatalogCreate,
+    AllergyCatalogResponse,
+    UserAllergyBase,
+    UserAllergyCreate,
+    UserAllergyUpdate,
+    UserAllergyResponse,
+)
+
+from .surgery import (
+    SurgeryCatalogBase,
+    SurgeryCatalogCreate,
+    SurgeryCatalogResponse,
+    UserSurgeryBase,
+    UserSurgeryCreate,
+    UserSurgeryUpdate,
+    UserSurgeryResponse,
+)
+
 __all__ = [
     "UserCreate",
     "UserLogin",
@@ -63,4 +83,19 @@ __all__ = [
     "ConditionTreatmentBase",
     "ConditionTreatmentCreate",
     "ConditionTreatmentResponse",
+    "AllergyCatalogBase",
+    "AllergyCatalogCreate",
+    "AllergyCatalogResponse",
+    "UserAllergyBase",
+    "UserAllergyCreate",
+    "UserAllergyUpdate",
+    "UserAllergyResponse",
+    "SurgeryCatalogBase",
+    "SurgeryCatalogCreate",
+    "SurgeryCatalogResponse",
+    "UserSurgeryBase",
+    "UserSurgeryCreate",
+    "UserSurgeryUpdate",
+    "UserSurgeryResponse",
 ]
+

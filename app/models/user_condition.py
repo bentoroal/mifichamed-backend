@@ -28,3 +28,4 @@ class UserCondition(Base):
     user = relationship("User", back_populates="conditions")
     condition = relationship("ConditionCatalog", back_populates="user_conditions")
     treatments = relationship("ConditionTreatment", back_populates="user_condition", cascade="all, delete")
+    surgeries = relationship("UserSurgery", back_populates="user_condition", cascade="all, delete")

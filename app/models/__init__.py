@@ -7,3 +7,7 @@ from .user_condition import UserCondition
 from .user_symptom import UserSymptom
 from .user_symptom_daily import UserSymptomDaily
 from .condition_treatment import ConditionTreatment
+from .allergy import AllergyCatalog
+from .user_allergy import UserAllergy
+from .surgery import SurgeryCatalog
+from .user_surgery import UserSurgery
