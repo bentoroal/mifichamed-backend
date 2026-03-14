@@ -5,7 +5,7 @@ from app.models.condition_treatment import ConditionTreatment
 from app.models.user_symptom import UserSymptom
 from app.models.user_profile import UserProfile
 from app.models.user_allergy import UserAllergy
-from app.models.enums import ConditionStatus, AllergyStatus, SurgeryStatus
+from app.models.enums import ConditionStatus, AllergyStatus
 from datetime import date
 
 def get_dashboard(db: Session, user_id: int):
