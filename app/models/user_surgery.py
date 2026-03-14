@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, Date, DateTime, ForeignKey, Text, Enum a
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.base import Base
-from app.models.enums import SurgeryStatus
 
 
 class UserSurgery(Base):
@@ -14,7 +13,6 @@ class UserSurgery(Base):
     user_condition_id = Column(Integer, ForeignKey("user_conditions.id"), nullable=True)
 
     surgery_date = Column(Date, nullable=True)
-    status = Column(SAEnum(SurgeryStatus), default=SurgeryStatus.COMPLETED, nullable=False)
 
     notes = Column(Text, nullable=True)
 

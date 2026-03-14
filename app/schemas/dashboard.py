@@ -1,6 +1,8 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Optional, List
+from datetime import date
 from app.schemas.user_profile import UserProfileOut
+
 
 class MedicationOut(BaseModel):
     id: int
@@ -13,6 +15,7 @@ class MedicationOut(BaseModel):
 class TreatmentOut(BaseModel):
     id: int
     dosage: Optional[str]
+    frequency: Optional[str]
     medication: MedicationOut
 
     class Config:
@@ -55,10 +58,31 @@ class UserSymptomOut(BaseModel):
         from_attributes = True
 
 
+class AllergyCatalogOut(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
+
+class UserAllergyOut(BaseModel):
+    id: int
+    status: str
+    start_date: Optional[date]
+    end_date: Optional[date]
+    notes: Optional[str]
+    allergy: AllergyCatalogOut
+
+    class Config:
+        from_attributes = True
+
+
 class DashboardOut(BaseModel):
     profile: UserProfileOut | None
-    active_conditions: list[UserConditionOut]
-    active_symptoms: list[UserSymptomOut]
+    active_conditions: List[UserConditionOut]
+    active_symptoms: List[UserSymptomOut]
+    active_allergies: List[UserAllergyOut]
 
     class Config:
         from_attributes = True

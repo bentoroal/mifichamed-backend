@@ -25,8 +25,3 @@ class ConditionStatus(str, enum.Enum):
 class AllergyStatus(str, enum.Enum):
     ACTIVE = "active"
     REMISSION = "remission"
-
-class SurgeryStatus(str, enum.Enum):
-    COMPLETED = "completed"
-    PLANNED = "planned"
-    CANCELLED = "cancelled"

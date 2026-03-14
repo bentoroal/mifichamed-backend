@@ -36,7 +36,6 @@ def create_user_surgery(
     name: Optional[str] = None,
     user_condition_id: Optional[int] = None,
     surgery_date: Optional[str] = None,
-    status: Optional[str] = None,
     notes: Optional[str] = None,
 ):
     if surgery_id is None and name is not None:
@@ -54,7 +53,6 @@ def create_user_surgery(
         surgery_id=surgery_id,
         user_condition_id=user_condition_id,
         surgery_date=surgery_date,
-        status=status,
         notes=notes,
     )
     db.add(item)

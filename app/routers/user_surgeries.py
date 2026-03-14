@@ -56,7 +56,6 @@ def create(
         name=getattr(item, "name", None),
         user_condition_id=item.user_condition_id,
         surgery_date=item.surgery_date,
-        status=item.status,
         notes=item.notes,
     )
 

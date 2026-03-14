@@ -50,6 +50,8 @@ from .surgery import (
     SurgeryCatalogBase,
     SurgeryCatalogCreate,
     SurgeryCatalogResponse,
+)
+from .user_surgery import (
     UserSurgeryBase,
     UserSurgeryCreate,
     UserSurgeryUpdate,
