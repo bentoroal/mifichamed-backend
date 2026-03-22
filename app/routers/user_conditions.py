@@ -38,7 +38,7 @@ def create(
         db,
         current_user.id,
         item.condition_id,
-        item.diagnosis_date,
+        item.start_date,
         item.end_date,
         item.status,
         item.notes,
@@ -84,7 +84,7 @@ def get_condition_symptoms(
     Obtiene los síntomas que estuvieron activos durante la vigencia de una condición.
     
     Busca todos los síntomas del usuario cuyo rango de fechas (start_date - end_date)
-    se superpone con el rango de la condición (diagnosis_date - end_date).
+    se superpone con el rango de la condición (start_date - end_date).
     
     Esto permite visualizar en el frontend qué síntomas estuvo experimentando el usuario
     mientras tenía una condición específica.

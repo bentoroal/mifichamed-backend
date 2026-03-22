@@ -12,7 +12,7 @@ class UserCondition(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     condition_id = Column(Integer, ForeignKey("conditions_catalog.id"), nullable=False)
 
-    diagnosis_date = Column(Date, nullable=True)
+    start_date = Column(Date, nullable=True)
     end_date = Column(Date, nullable=True) # Fecha de término o recuperación de la condición
 
     status = Column(

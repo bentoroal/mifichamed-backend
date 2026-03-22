@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.core.security import get_current_user
 from app.models.user import User
@@ -15,10 +15,33 @@ router = APIRouter(prefix="/conditions", tags=["Conditions"])
 def list_conditions(
     skip: int = 0,
     limit: int = 100,
+    category: Optional[ConditionCategory] = None,
+    search: Optional[str] = None,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return get_conditions(db, current_user.id, skip, limit)
+    return get_conditions(
+        db,
+        current_user.id,
+        skip,
+        limit,
+        category,
+        search
+    )
+
+@router.get("/categories")
+def get_categories():
+    return [c.value for c in ConditionCategory]
+
+
+@router.get("/by-category", response_model=List[ConditionCatalogResponse])
+def get_by_category(
+    category: ConditionCategory,
+    search: str = "",
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return get_conditions(db, current_user.id, 0, 100, category, search)
 
 
 @router.post("/", response_model=ConditionCatalogResponse)
@@ -27,7 +50,7 @@ def create(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return create_condition(db, cond.name, cond.category, current_user.id, cond.is_custom)
+    return create_condition(db, cond.name, cond.category, current_user.id, True)
 
 
 @router.get("/{condition_id}", response_model=ConditionCatalogResponse)

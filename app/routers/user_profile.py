@@ -35,18 +35,15 @@ def create_profile_route(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    existing = get_profile(db, current_user.id)
-    if existing:
-        raise HTTPException(status_code=409, detail="Profile already exists")
-    return create_profile(
-        db,
-        current_user.id,
-        item.full_name,
-        item.birth_date,
-        item.sex,
-    )
-
-
+    try:
+        return create_profile(
+            db,
+            current_user.id,
+            item  # 👈 ahora pasas el objeto completo
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    
 @router.patch("/", response_model=UserProfileOut)
 def update_profile_route(
     item: UserProfileUpdate,

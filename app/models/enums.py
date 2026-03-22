@@ -25,3 +25,9 @@ class ConditionStatus(str, enum.Enum):
 class AllergyStatus(str, enum.Enum):
     ACTIVE = "active"
     REMISSION = "remission"
+
+class SexEnum(str, enum.Enum):
+    MALE = "male"
+    FEMALE = "female"
+    OTHER = "other"
+
