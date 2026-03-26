@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import or_
 from app.models import User
 from app.models.user_condition import UserCondition
 from app.models.condition_treatment import ConditionTreatment
@@ -16,13 +17,16 @@ def get_dashboard(db: Session, user_id: int):
     active_conditions = (
         db.query(UserCondition)
         .options(
-            joinedload(UserCondition.condition),
+            joinedload(UserCondition.condition),0
             joinedload(UserCondition.treatments)
                 .joinedload(ConditionTreatment.medication)
         )
         .filter(
             UserCondition.user_id == user_id,
-            UserCondition.status == ConditionStatus.ACTIVE
+            or_(
+                UserCondition.status == ConditionStatus.ACTIVE,
+                UserCondition.status == ConditionStatus.CHRONIC
+            )
         )
         .all()
     )
