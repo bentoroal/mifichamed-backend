@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from typing import List
 from sqlalchemy.orm import Session
 from app.core.security import get_current_user
@@ -51,4 +51,4 @@ def remove(
     obj = delete_symptom(db, symptom_id, current_user.id)
     if not obj:
         raise HTTPException(status_code=404, detail="Symptom not found or not owned")
-    return obj
+    return Response(status_code=204)

@@ -21,7 +21,7 @@ class UserConditionResponse(UserConditionBase):
     id: int
     created_at: datetime
 
-    condition: ConditionCatalogResponse  # 🔥 AQUÍ ESTÁ LA CLAVE
+    condition: ConditionCatalogResponse 
 
     class Config:
         from_attributes = True

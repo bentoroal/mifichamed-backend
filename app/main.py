@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.db.base import Base
 from app.db.session import engine
-from app.routers import auth, conditions, medications, symptoms, user_conditions, user_symptoms, condition_treatments, dashboard, user_profile, user_surgeries, user_allergies, allergies, surgeries
+from app.routers import auth, conditions, medications, symptoms, user_conditions, user_symptoms, user_symptom_daily, condition_treatments, dashboard, user_profile, user_surgeries, user_allergies, allergies, surgeries
 
 import app.models  # imported so that SQLAlchemy model classes are registered, unused variable
 
@@ -20,7 +20,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # puedes poner ["*"] para pruebas
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -34,6 +34,7 @@ app.include_router(medications.router)
 app.include_router(symptoms.router)
 app.include_router(user_conditions.router)
 app.include_router(user_symptoms.router)
+app.include_router(user_symptom_daily.router)
 app.include_router(condition_treatments.router)
 app.include_router(dashboard.router)
 app.include_router(user_profile.router)

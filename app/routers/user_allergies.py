@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from typing import List
 from sqlalchemy.orm import Session
 from app.core.security import get_current_user
@@ -69,7 +69,7 @@ def remove(
     obj = delete_user_allergy(db, ua_id, current_user.id)
     if not obj:
         raise HTTPException(status_code=404, detail="UserAllergy not found")
-    return obj
+    return Response(status_code=204)
 
 
 @router.patch("/{ua_id}", response_model=UserAllergyResponse)

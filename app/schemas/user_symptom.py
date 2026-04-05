@@ -2,6 +2,12 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import date, datetime
 
+class SymptomSimple(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
 
 class UserSymptomBase(BaseModel):
     symptom_id: int
@@ -19,6 +25,8 @@ class UserSymptomResponse(UserSymptomBase):
     id: int
     user_id: int
     created_at: datetime
+
+    symptom: SymptomSimple
 
     class Config:
         from_attributes = True

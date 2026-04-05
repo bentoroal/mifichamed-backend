@@ -17,7 +17,7 @@ def get_dashboard(db: Session, user_id: int):
     active_conditions = (
         db.query(UserCondition)
         .options(
-            joinedload(UserCondition.condition),0
+            joinedload(UserCondition.condition),
             joinedload(UserCondition.treatments)
                 .joinedload(ConditionTreatment.medication)
         )

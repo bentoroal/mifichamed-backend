@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from typing import List
 from sqlalchemy.orm import Session
 from app.core.security import get_current_user
@@ -66,7 +66,7 @@ def remove(
     obj = delete_user_condition(db, uc_id, current_user.id)
     if not obj:
         raise HTTPException(status_code=404, detail="UserCondition not found")
-    return obj
+    return Response(status_code=204)
 
 
 # ENDPOINT PARA OBTENER SÍNTOMAS ACTIVOS DURANTE UNA CONDICIÓN

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from app.core.security import get_current_user
 from app.models.user import User
@@ -64,4 +64,4 @@ def delete_profile_route(
     profile = delete_profile(db, current_user.id)
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
-    return profile
+    return Response(status_code=204)

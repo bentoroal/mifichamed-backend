@@ -1,11 +1,12 @@
 from sqlalchemy.orm import Session
 from app.models.user_symptom import UserSymptom
 from typing import Optional
-
+from sqlalchemy.orm import joinedload
 
 def get_user_symptoms(db: Session, user_id: int, skip: int = 0, limit: int = 100):
-    # return paginated list of symptoms belonging to a specific user
-    return db.query(UserSymptom).filter(
+    return db.query(UserSymptom).options(
+        joinedload(UserSymptom.symptom)  # 🔥 esto faltaba
+    ).filter(
         UserSymptom.user_id == user_id
     ).offset(skip).limit(limit).all()
 

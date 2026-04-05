@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.symptom import SymptomCatalog
+from sqlalchemy import or_, false
 
 
 def get_symptoms(db: Session, user_id: int | None = None, skip: int = 0, limit: int = 100):
@@ -10,6 +11,7 @@ def get_symptoms(db: Session, user_id: int | None = None, skip: int = 0, limit: 
         query = query.filter(
             or_(
                 SymptomCatalog.is_custom == false(),
+                SymptomCatalog.is_custom.is_(None),
                 SymptomCatalog.created_by_user_id == user_id,
             )
         )
@@ -19,7 +21,7 @@ def get_symptoms(db: Session, user_id: int | None = None, skip: int = 0, limit: 
 def get_symptom(db: Session, symptom_id: int, user_id: int | None = None):
     query = db.query(SymptomCatalog).filter(SymptomCatalog.id == symptom_id)
     if user_id is not None:
-        from sqlalchemy import or_, false
+        
         query = query.filter(
             or_(
                 SymptomCatalog.is_custom == false(),
