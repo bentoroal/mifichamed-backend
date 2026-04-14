@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from typing import Optional
 from app.models.user_surgery import UserSurgery
 from app.models.surgery import SurgeryCatalog
@@ -16,14 +16,14 @@ def get_or_create_surgery_catalog(db: Session, name: str, user_id: Optional[int]
 
 
 def get_user_surgeries(db: Session, user_id: int, skip: int = 0, limit: int = 100, condition_id: Optional[int] = None):
-    query = db.query(UserSurgery).filter(UserSurgery.user_id == user_id)
+    query = db.query(UserSurgery).options(joinedload(UserSurgery.surgery)).filter(UserSurgery.user_id == user_id)
     if condition_id is not None:
         query = query.filter(UserSurgery.user_condition_id == condition_id)
     return query.offset(skip).limit(limit).all()
 
 
 def get_user_surgery(db: Session, us_id: int, user_id: int):
-    return db.query(UserSurgery).filter(
+    return db.query(UserSurgery).options(joinedload(UserSurgery.surgery)).filter(
         UserSurgery.id == us_id,
         UserSurgery.user_id == user_id
     ).first()

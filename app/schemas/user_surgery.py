@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import date, datetime
+from app.schemas.surgery import SurgeryCatalogResponse
 
 class UserSurgeryBase(BaseModel):
     surgery_id: int
@@ -23,6 +24,7 @@ class UserSurgeryUpdate(BaseModel):
 
 class UserSurgeryResponse(UserSurgeryBase):
     id: int
+    surgery: SurgeryCatalogResponse
     created_at: datetime
 
     class Config:
