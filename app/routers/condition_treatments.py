@@ -3,8 +3,18 @@ from typing import List
 from sqlalchemy.orm import Session
 from app.core.security import get_current_user
 from app.models.user import User
-from app.schemas.condition_treatment import ConditionTreatmentCreate, ConditionTreatmentResponse
-from app.services.condition_treatment_service import get_treatments, get_treatment, create_treatment, delete_treatment
+from app.schemas.condition_treatment import (
+    ConditionTreatmentCreate,
+    ConditionTreatmentResponse,
+    ConditionTreatmentUpdate,
+)
+from app.services.condition_treatment_service import (
+    get_treatments,
+    get_treatment,
+    create_treatment,
+    delete_treatment,
+    update_treatment,
+)
 from app.db.session import get_db
 
 router = APIRouter(prefix="/condition-treatments", tags=["ConditionTreatments"])
@@ -64,3 +74,24 @@ def remove(
     if not obj:
         raise HTTPException(status_code=404, detail="ConditionTreatment not found or not owned")
     return Response(status_code=204)
+
+
+@router.patch("/{t_id}", response_model=ConditionTreatmentResponse)
+def update(
+    t_id: int,
+    item: ConditionTreatmentUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        db_obj = update_treatment(
+            db,
+            t_id,
+            current_user.id,
+            item.model_dump(exclude_unset=True),
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    if not db_obj:
+        raise HTTPException(status_code=404, detail="ConditionTreatment not found or not owned")
+    return db_obj

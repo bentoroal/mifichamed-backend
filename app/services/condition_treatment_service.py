@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from app.models.condition_treatment import ConditionTreatment
 from typing import Optional
 
@@ -52,3 +53,38 @@ def delete_treatment(db: Session, t_id: int, user_id: int):
     db.delete(obj)
     db.commit()
     return obj
+
+
+def update_treatment(db: Session, t_id: int, user_id: int, updates: dict):
+    db_obj = get_treatment(db, t_id, user_id)
+    if not db_obj:
+        return None
+
+    allowed_fields = {
+        "medication_id",
+        "dosage",
+        "frequency",
+        "start_date",
+        "end_date",
+        "notes",
+    }
+
+    if "medication_id" in updates and updates["medication_id"] is not None:
+        from app.services.medication_service import get_medication
+
+        medication = get_medication(db, updates["medication_id"], user_id)
+        if not medication:
+            raise ValueError("Medication not found or not accessible")
+
+    for field, value in updates.items():
+        if field in allowed_fields:
+            setattr(db_obj, field, value)
+
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        db.rollback()
+        raise ValueError("Invalid treatment update") from exc
+
+    db.refresh(db_obj)
+    return db_obj
