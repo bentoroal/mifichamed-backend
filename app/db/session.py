@@ -1,15 +1,26 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.core.config import DATABASE_URL
-#variable que inicia la coneccion con SQLite
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL no está configurada")
+
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False}
+    pool_pre_ping=True
 )
-#Crea sesion para interactuar con db
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-#Dependencia de FastApi
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
 def get_db():
     db = SessionLocal()
     try:
