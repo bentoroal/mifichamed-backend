@@ -38,6 +38,23 @@ def delete_user_condition(db: Session, uc_id: int, user_id: int):
     return obj
 
 
+def update_user_condition(db: Session, uc_id: int, user_id: int, updates: dict):
+    db_obj = db.query(UserCondition).filter(
+        UserCondition.id == uc_id,
+        UserCondition.user_id == user_id,
+    ).first()
+
+    if not db_obj:
+        return None
+
+    for field, value in updates.items():
+        setattr(db_obj, field, value)
+
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
+
+
 def get_active_symptoms_for_condition(db: Session, uc_id: int, user_id: int, skip: int = 0, limit: int = 100):
     """
     Obtiene los síntomas que estuvieron activos durante la vigencia de una condición específica.

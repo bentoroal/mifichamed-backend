@@ -17,6 +17,14 @@ class UserConditionCreate(UserConditionBase):
     pass
 
 
+class UserConditionUpdate(BaseModel):
+    condition_id: Optional[int] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    status: Optional[ConditionStatus] = None
+    notes: Optional[str] = None
+
+
 class UserConditionResponse(UserConditionBase):
     id: int
     created_at: datetime

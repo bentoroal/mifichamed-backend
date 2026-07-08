@@ -3,13 +3,18 @@ from typing import List
 from sqlalchemy.orm import Session
 from app.core.security import get_current_user
 from app.models.user import User
-from app.schemas.user_condition import UserConditionCreate, UserConditionResponse
+from app.schemas.user_condition import (
+    UserConditionCreate,
+    UserConditionResponse,
+    UserConditionUpdate,
+)
 from app.schemas.user_symptom import UserSymptomResponse
 from app.services.user_condition_service import (
     get_user_conditions,
     get_user_condition,
     create_user_condition,
     delete_user_condition,
+    update_user_condition,
     get_active_symptoms_for_condition,
 )
 from app.db.session import get_db
@@ -67,6 +72,24 @@ def remove(
     if not obj:
         raise HTTPException(status_code=404, detail="UserCondition not found")
     return Response(status_code=204)
+
+
+@router.patch("/{uc_id}", response_model=UserConditionResponse)
+def update(
+    uc_id: int,
+    item: UserConditionUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    db_obj = update_user_condition(
+        db,
+        uc_id,
+        current_user.id,
+        item.model_dump(exclude_unset=True),
+    )
+    if not db_obj:
+        raise HTTPException(status_code=404, detail="UserCondition not found")
+    return db_obj
 
 
 # ENDPOINT PARA OBTENER SÍNTOMAS ACTIVOS DURANTE UNA CONDICIÓN
