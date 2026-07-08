@@ -58,10 +58,6 @@ def get_dashboard(db: Session, user_id: int):
         )
         .all()
     )
-    active_allergies = [
-        a for a in active_allergies
-        if a.end_date is None or a.end_date >= today
-    ]
 
     counts = {
         "conditions": len(active_conditions),

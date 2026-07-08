@@ -29,7 +29,6 @@ class UserAllergyBase(BaseModel):
     allergy_id: int
     status: Optional[AllergyStatus] = AllergyStatus.ACTIVE
     start_date: Optional[date] = None
-    end_date: Optional[date] = None
     notes: Optional[str] = None
 
 

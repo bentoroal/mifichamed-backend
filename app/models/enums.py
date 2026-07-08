@@ -31,3 +31,21 @@ class SexEnum(str, enum.Enum):
     FEMALE = "female"
     OTHER = "other"
 
+class AlcoholEnum(str, enum.Enum):
+    NONE = "none"
+    SOCIAL = "social"
+    REGULAR = "regular"
+    HEAVY = "heavy"
+
+class SmokingEnum(str, enum.Enum):
+    NONE = "none"
+    SOCIAL = "social"
+    REGULAR = "regular"
+    HEAVY = "heavy"
+
+class PhysicalActivityEnum(str, enum.Enum):
+    NONE = "none"
+    LIGHT = "light"
+    MODERATE = "moderate"
+    INTENSE = "intense"
+

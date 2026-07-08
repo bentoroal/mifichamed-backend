@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import date
 from typing import Optional
-from app.models.enums import SexEnum
+from app.models.enums import SexEnum, AlcoholEnum, SmokingEnum, PhysicalActivityEnum
 
 
 class UserProfileBase(BaseModel):
@@ -10,6 +10,9 @@ class UserProfileBase(BaseModel):
     sex: Optional[SexEnum] = None
     weight: Optional[float] = None
     height: Optional[int] = None
+    alcohol_consumption: Optional[AlcoholEnum] = None
+    smoking_habits: Optional[SmokingEnum] = None
+    physical_activity: Optional[PhysicalActivityEnum] = None
 
 
 class UserProfileCreate(UserProfileBase):
@@ -22,6 +25,9 @@ class UserProfileUpdate(BaseModel):
     sex: Optional[SexEnum] = None
     weight: Optional[float] = None
     height: Optional[int] = None
+    alcohol_consumption: Optional[AlcoholEnum] = None
+    smoking_habits: Optional[SmokingEnum] = None
+    physical_activity: Optional[PhysicalActivityEnum] = None
 
 
 class UserProfileOut(BaseModel):
@@ -30,6 +36,9 @@ class UserProfileOut(BaseModel):
     sex: str | None
     weight: float | None
     height: int | None
+    alcohol_consumption: str | None
+    smoking_habits: str | None
+    physical_activity: str | None
 
     class Config:
         from_attributes = True 

@@ -55,7 +55,6 @@ def create(
         name=getattr(item, "name", None),
         status=item.status,
         start_date=item.start_date,
-        end_date=item.end_date,
         notes=item.notes,
     )
 

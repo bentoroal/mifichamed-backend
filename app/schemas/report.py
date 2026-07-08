@@ -1,8 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
-from datetime import date
+from datetime import date, datetime
 from app.schemas.user_profile import UserProfileOut
-
 
 class MedicationOut(BaseModel):
     id: int
@@ -16,7 +15,10 @@ class TreatmentOut(BaseModel):
     id: int
     dosage: Optional[str]
     frequency: Optional[str]
-    medication: MedicationOut
+    start_date: Optional[date]
+    end_date: Optional[date]
+    notes: Optional[str]
+    medication: Optional[MedicationOut]
 
     class Config:
         from_attributes = True
@@ -33,6 +35,8 @@ class ConditionCatalogOut(BaseModel):
 class UserConditionOut(BaseModel):
     id: int
     status: str
+    start_date: Optional[date]
+    end_date: Optional[date]
     notes: Optional[str]
     condition: ConditionCatalogOut
     treatments: List[TreatmentOut]
@@ -51,7 +55,10 @@ class SymptomCatalogOut(BaseModel):
 
 class UserSymptomOut(BaseModel):
     id: int
+    start_date: Optional[date]
+    end_date: Optional[date]
     severity: Optional[int]
+    notes: Optional[str]
     symptom: SymptomCatalogOut
 
     class Config:
@@ -77,11 +84,33 @@ class UserAllergyOut(BaseModel):
         from_attributes = True
 
 
-class DashboardOut(BaseModel):
+class SurgeryCatalogOut(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
+
+class UserSurgeryOut(BaseModel):
+    id: int
+    surgery_date: Optional[date]
+    notes: Optional[str]
+    surgery: SurgeryCatalogOut
+
+    class Config:
+        from_attributes = True
+
+
+class ReportOut(BaseModel):
+    generated_at: datetime
+    detail: str
+    included_sections: List[str]
     profile: UserProfileOut | None
     active_conditions: List[UserConditionOut]
     active_symptoms: List[UserSymptomOut]
     active_allergies: List[UserAllergyOut]
+    surgeries: List[UserSurgeryOut]
 
     class Config:
         from_attributes = True

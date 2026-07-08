@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.user_profile import UserProfile
 from typing import Optional
-from app.models.enums import SexEnum
+from app.models.enums import SexEnum, AlcoholEnum, SmokingEnum, PhysicalActivityEnum
 from datetime import date
 from app.schemas.user_profile import UserProfileCreate
 
@@ -36,7 +36,7 @@ def update_profile(db: Session, user_id: int, updates: dict):
     if not db_obj:
         return None
 
-    allowed_fields = {"full_name", "birth_date", "sex", "weight", "height"}
+    allowed_fields = {"full_name", "birth_date", "sex", "weight", "height", "alcohol_consumption", "smoking_habits", "physical_activity"}
 
     for field, value in updates.items():
         if field in allowed_fields:

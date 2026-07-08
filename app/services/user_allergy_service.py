@@ -19,7 +19,6 @@ def create_user_allergy(
     name: Optional[str] = None,
     status: Optional[str] = None,
     start_date: Optional[str] = None,
-    end_date: Optional[str] = None,
     notes: Optional[str] = None,
 ):
     if allergy_id is None:
@@ -36,7 +35,6 @@ def create_user_allergy(
         allergy_id=allergy_id,
         status=status,
         start_date=start_date,
-        end_date=end_date,
         notes=notes,
     )
     db.add(item)

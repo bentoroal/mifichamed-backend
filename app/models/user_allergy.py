@@ -14,7 +14,6 @@ class UserAllergy(Base):
 
     status = Column(SAEnum(AllergyStatus), default=AllergyStatus.ACTIVE, nullable=False)
     start_date = Column(Date, nullable=True)
-    end_date = Column(Date, nullable=True)
 
     notes = Column(Text, nullable=True)
 
