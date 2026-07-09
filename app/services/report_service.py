@@ -24,8 +24,6 @@ AVAILABLE_REPORT_SECTIONS = DEFAULT_REPORT_SECTIONS | {
     "surgeries",
 }
 
-REPORT_DETAILS = {"summary", "detailed"}
-
 
 def _normalize_sections(sections: list[str] | None) -> set[str]:
     if not sections:
@@ -125,10 +123,8 @@ def get_report(
     db: Session,
     user_id: int,
     sections: list[str] | None = None,
-    detail: str = "summary",
 ):
     selected_sections = _normalize_sections(sections)
-    selected_detail = detail if detail in REPORT_DETAILS else "summary"
 
     profile = None
     if "profile" in selected_sections:
@@ -219,21 +215,8 @@ def get_report(
         else []
     )
 
-    if selected_detail == "summary":
-        for condition in active_conditions_out:
-            condition["notes"] = None
-            for treatment in condition["treatments"]:
-                treatment["notes"] = None
-        for symptom in active_symptoms:
-            symptom["notes"] = None
-        for allergy in active_allergies:
-            allergy["notes"] = None
-        for surgery in surgeries:
-            surgery["notes"] = None
-
     return {
         "generated_at": datetime.utcnow(),
-        "detail": selected_detail,
         "included_sections": sorted(selected_sections),
         "profile": profile,
         "active_conditions": active_conditions_out,

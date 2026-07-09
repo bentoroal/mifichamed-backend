@@ -104,7 +104,6 @@ class UserSurgeryOut(BaseModel):
 
 class ReportOut(BaseModel):
     generated_at: datetime
-    detail: str
     included_sections: List[str]
     profile: UserProfileOut | None
     active_conditions: List[UserConditionOut]

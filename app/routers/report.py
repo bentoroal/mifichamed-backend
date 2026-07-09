@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from html import escape
 from io import BytesIO
 
@@ -27,7 +28,7 @@ def _parse_sections(sections: str | None) -> list[str] | None:
     ]
 
 
-def _filters_to_sections(filters: dict) -> tuple[list[str] | None, str]:
+def _filters_to_sections(filters: dict) -> list[str] | None:
     """Convert frontend filters dict to backend sections format."""
     sections = []
     if filters.get("includeProfile", False):
@@ -43,8 +44,14 @@ def _filters_to_sections(filters: dict) -> tuple[list[str] | None, str]:
     if filters.get("includeSurgeries", False):
         sections.append("surgeries")
 
-    detail = "detailed" if filters.get("detail", "summary") == "detailed" else "summary"
-    return (sections or None, detail)
+    return sections or None
+
+
+def _normalize_report_value(value):
+    if isinstance(value, Enum):
+        return value.value
+
+    return value
 
 
 def _map_report_for_frontend(report: dict) -> dict:
@@ -59,28 +66,38 @@ def _map_report_for_frontend(report: dict) -> dict:
     profile = report.get("profile")
     if profile:
         out["profile"] = {
-            "full_name": getattr(profile, "full_name", None),
-            "birth_date": getattr(profile, "birth_date", None),
-            "age": getattr(profile, "age", None),
-            "weight": getattr(profile, "weight", None),
-            "height": getattr(profile, "height", None),
+            "full_name": _normalize_report_value(getattr(profile, "full_name", None)),
+            "birth_date": _normalize_report_value(getattr(profile, "birth_date", None)),
+            "age": _normalize_report_value(getattr(profile, "age", None)),
+            "sex": _normalize_report_value(getattr(profile, "sex", None)),
+            "weight": _normalize_report_value(getattr(profile, "weight", None)),
+            "height": _normalize_report_value(getattr(profile, "height", None)),
+            "alcohol_consumption": _normalize_report_value(
+                getattr(profile, "alcohol_consumption", None)
+            ),
+            "smoking_habits": _normalize_report_value(
+                getattr(profile, "smoking_habits", None)
+            ),
+            "physical_activity": _normalize_report_value(
+                getattr(profile, "physical_activity", None)
+            ),
         }
     else:
         out["profile"] = None
 
     conditions = []
     treatments = []
-    for condition in report.get("active_conditions", []):
-        condition_copy = condition.copy()
-        condition_treatments = condition_copy.pop("treatments", [])
+    for user_condition in report.get("active_conditions", []):
+        condition_data = user_condition.copy()
+        condition_treatments = condition_data.pop("treatments", [])
         conditions.append(
             {
-                "id": condition_copy.get("id"),
-                "status": condition_copy.get("status"),
-                "start_date": condition_copy.get("start_date"),
-                "end_date": condition_copy.get("end_date"),
-                "notes": condition_copy.get("notes"),
-                "condition": condition_copy.get("condition"),
+                "id": condition_data.get("id"),
+                "status": condition_data.get("status"),
+                "start_date": condition_data.get("start_date"),
+                "end_date": condition_data.get("end_date"),
+                "notes": condition_data.get("notes"),
+                "condition": condition_data.get("condition"),
             }
         )
 
@@ -122,7 +139,7 @@ def _item_name(item: dict) -> str:
     return f"Registro {item.get('id') or ''}".strip()
 
 
-def _build_report_pdf(mapped: dict) -> BytesIO:
+def _build_report_pdf(mapped: dict, requested_sections: list[str] | None = None) -> BytesIO:
     try:
         from reportlab.lib import colors
         from reportlab.lib.pagesizes import letter
@@ -190,53 +207,6 @@ def _build_report_pdf(mapped: dict) -> BytesIO:
         )
         story.append(table)
 
-    profile = mapped.get("profile")
-    if profile:
-        add_heading("Perfil")
-        
-        # Formatear fecha de nacimiento con edad
-        birth_date = profile.get("birth_date")
-        age = profile.get("age")
-        if birth_date:
-            # Convertir a date si es string
-            if isinstance(birth_date, str):
-                from datetime import datetime as dt
-                birth_date = dt.strptime(birth_date, "%Y-%m-%d").date()
-            birth_date_display = f"{birth_date.strftime('%d/%m/%Y')} ({age} años)" if age else birth_date.strftime('%d/%m/%Y')
-        else:
-            birth_date_display = "No especificado"
-        
-        add_table(
-            [
-                [cell("Nombre"), cell(profile.get("full_name"))],
-                [
-                    cell("Fecha de Nacimiento"),
-                    cell(birth_date_display),
-                ],
-                [
-                    cell("Peso"),
-                    cell(f"{profile.get('weight')} kg" if profile.get("weight") else None),
-                ],
-                [
-                    cell("Altura"),
-                    cell(f"{profile.get('height')} cm" if profile.get("height") else None),
-                ],
-                [
-                    cell("Consumo de Alcohol"),
-                    cell(profile.get("alcohol_consumption") or "No especificado"),
-                ],
-                [
-                    cell("Consumo de Cigarrillo"),
-                    cell(profile.get("smoking_habits") or "No especificado"),
-                ],
-                [
-                    cell("Actividad Física"),
-                    cell(profile.get("physical_activity") or "No especificado"),
-                ]
-            ],
-            [4 * cm, 12 * cm],
-        )
-
     def add_section(title: str, items: list, columns: list[tuple[str, str]]):
         add_heading(title)
         if not items:
@@ -254,56 +224,128 @@ def _build_report_pdf(mapped: dict) -> BytesIO:
 
         add_table(rows, [16 * cm / len(columns)] * len(columns))
 
-    add_section(
-        "Enfermedades",
-        mapped.get("conditions", []),
-        [
-            ("Nombre", "__name__"),
-            ("Estado", "status"),
-            ("Inicio", "start_date"),
-            ("Fin", "end_date"),
-            ("Notas", "notes"),
-        ],
-    )
-    add_section(
-        "Tratamientos",
-        mapped.get("treatments", []),
-        [
-            ("Medicamento", "__name__"),
-            ("Dosis", "dosage"),
-            ("Frecuencia", "frequency"),
-            ("Notas", "notes"),
-        ],
-    )
-    add_section(
-        "Sintomas",
-        mapped.get("symptoms", []),
-        [
-            ("Nombre", "__name__"),
-            ("Inicio", "start_date"),
-            ("Fin", "end_date"),
-            ("Notas", "notes"),
-        ],
-    )
-    add_section(
-        "Alergias",
-        mapped.get("allergies", []),
-        [
-            ("Nombre", "__name__"),
-            ("Estado", "status"),
-            ("Inicio", "start_date"),
-            ("Notas", "notes"),
-        ],
-    )
-    add_section(
-        "Cirugias",
-        mapped.get("surgeries", []),
-        [
-            ("Nombre", "__name__"),
-            ("Fecha", "surgery_date"),
-            ("Notas", "notes"),
-        ],
-    )
+    # Define all available sections
+    sections_config = [
+        ("profile", None, None, None),  # Special case: profile is handled separately
+        (
+            "conditions",
+            "Enfermedades",
+            "conditions",
+            [
+                ("Nombre", "__name__"),
+                ("Estado", "status"),
+                ("Inicio", "start_date"),
+                ("Fin", "end_date"),
+                ("Notas", "notes"),
+            ],
+        ),
+        (
+            "treatments",
+            "Tratamientos",
+            "treatments",
+            [
+                ("Medicamento", "__name__"),
+                ("Dosis", "dosage"),
+                ("Frecuencia", "frequency"),
+                ("Notas", "notes"),
+            ],
+        ),
+        (
+            "symptoms",
+            "Sintomas",
+            "symptoms",
+            [
+                ("Nombre", "__name__"),
+                ("Inicio", "start_date"),
+                ("Fin", "end_date"),
+                ("Notas", "notes"),
+            ],
+        ),
+        (
+            "allergies",
+            "Alergias",
+            "allergies",
+            [
+                ("Nombre", "__name__"),
+                ("Estado", "status"),
+                ("Inicio", "start_date"),
+                ("Notas", "notes"),
+            ],
+        ),
+        (
+            "surgeries",
+            "Cirugias",
+            "surgeries",
+            [
+                ("Nombre", "__name__"),
+                ("Fecha", "surgery_date"),
+                ("Notas", "notes"),
+            ],
+        ),
+    ]
+
+    # If requested_sections is None, include all sections (backwards compatibility)
+    # Otherwise, only include requested sections
+    should_include_all = requested_sections is None
+
+    for section_key, title, data_key, columns in sections_config:
+        if section_key == "profile":
+            # Handle profile specially
+            if should_include_all or (requested_sections and "profile" in requested_sections):
+                profile = mapped.get("profile")
+                if profile:
+                    add_heading("Perfil")
+                    
+                    # Formatear fecha de nacimiento con edad
+                    birth_date = profile.get("birth_date")
+                    age = profile.get("age")
+                    if birth_date:
+                        # Convertir a date si es string
+                        if isinstance(birth_date, str):
+                            from datetime import datetime as dt
+                            birth_date = dt.strptime(birth_date, "%Y-%m-%d").date()
+                        birth_date_display = f"{birth_date.strftime('%d/%m/%Y')} ({age} años)" if age else birth_date.strftime('%d/%m/%Y')
+                    else:
+                        birth_date_display = "No especificado"
+                    
+                    add_table(
+                        [
+                            [cell("Nombre"), cell(profile.get("full_name"))],
+                            [
+                                cell("Fecha de Nacimiento"),
+                                cell(birth_date_display),
+                            ],
+                            [
+                                cell("Peso"),
+                                cell(f"{profile.get('weight')} kg" if profile.get("weight") else None),
+                            ],
+                            [
+                                cell("Altura"),
+                                cell(f"{profile.get('height')} cm" if profile.get("height") else None),
+                            ],
+                            [
+                                cell("Consumo de Alcohol"),
+                                cell(profile.get("alcohol_consumption") or "No especificado"),
+                            ],
+                            [
+                                cell("Consumo de Cigarrillo"),
+                                cell(profile.get("smoking_habits") or "No especificado"),
+                            ],
+                            [
+                                cell("Actividad Física"),
+                                cell(profile.get("physical_activity") or "No especificado")
+                            ]
+                        ],
+                        [4 * cm, 12 * cm],
+                    )
+        else:
+            # Handle other sections
+            if should_include_all or (requested_sections and section_key in requested_sections):
+                add_section(
+                    title,
+                    mapped.get(data_key, []),
+                    columns,
+                )
 
     doc.build(story)
     buffer.seek(0)
@@ -319,10 +361,6 @@ def report(
             "profile,conditions,treatments,symptoms,allergies,surgeries"
         ),
     ),
-    detail: str = Query(
-        "summary",
-        description="Report detail level: summary or detailed",
-    ),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -330,7 +368,6 @@ def report(
         db,
         current_user.id,
         sections=_parse_sections(sections),
-        detail=detail,
     )
 
 
@@ -342,8 +379,8 @@ def reports_preview(
 ):
     """Generate report preview with frontend filter format."""
     try:
-        sections, detail = _filters_to_sections(filters)
-        report_data = get_report(db, current_user.id, sections=sections, detail=detail)
+        sections = _filters_to_sections(filters)
+        report_data = get_report(db, current_user.id, sections=sections)
         mapped = _map_report_for_frontend(report_data)
         return JSONResponse(content=jsonable_encoder(mapped))
     except Exception as exc:
@@ -358,10 +395,10 @@ def reports_pdf(
 ):
     """Generate and download report as PDF."""
     try:
-        sections, detail = _filters_to_sections(filters)
-        report_data = get_report(db, current_user.id, sections=sections, detail=detail)
+        sections = _filters_to_sections(filters)
+        report_data = get_report(db, current_user.id, sections=sections)
         mapped = jsonable_encoder(_map_report_for_frontend(report_data))
-        buffer = _build_report_pdf(mapped)
+        buffer = _build_report_pdf(mapped, requested_sections=sections)
 
         return StreamingResponse(
             buffer,
