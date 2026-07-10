@@ -13,6 +13,7 @@ from app.db.session import get_db
 from app.models.user import User
 from app.schemas.report import ReportOut
 from app.services.report_service import get_report
+from app.core.translations import translate_value, get_label
 
 router = APIRouter(prefix="/reports", tags=["Report"])
 
@@ -53,6 +54,9 @@ def _normalize_report_value(value):
 
     return value
 
+def _translated(field_name: str, value):
+    return translate_value(field_name, _normalize_report_value(value))
+
 
 def _map_report_for_frontend(report: dict) -> dict:
     """Map backend report format to frontend expected shape."""
@@ -69,17 +73,17 @@ def _map_report_for_frontend(report: dict) -> dict:
             "full_name": _normalize_report_value(getattr(profile, "full_name", None)),
             "birth_date": _normalize_report_value(getattr(profile, "birth_date", None)),
             "age": _normalize_report_value(getattr(profile, "age", None)),
-            "sex": _normalize_report_value(getattr(profile, "sex", None)),
+            "sex": _translated("sex", getattr(profile, "sex", None)),
             "weight": _normalize_report_value(getattr(profile, "weight", None)),
             "height": _normalize_report_value(getattr(profile, "height", None)),
-            "alcohol_consumption": _normalize_report_value(
-                getattr(profile, "alcohol_consumption", None)
+            "alcohol_consumption": _translated(
+                "alcohol_consumption", getattr(profile, "alcohol_consumption", None)
             ),
-            "smoking_habits": _normalize_report_value(
-                getattr(profile, "smoking_habits", None)
+            "smoking_habits": _translated(
+                "smoking_habits", getattr(profile, "smoking_habits", None)
             ),
-            "physical_activity": _normalize_report_value(
-                getattr(profile, "physical_activity", None)
+            "physical_activity": _translated(
+                "physical_activity", getattr(profile, "physical_activity", None)
             ),
         }
     else:
@@ -93,7 +97,7 @@ def _map_report_for_frontend(report: dict) -> dict:
         conditions.append(
             {
                 "id": condition_data.get("id"),
-                "status": condition_data.get("status"),
+                "status": _translated("status", condition_data.get("status")),
                 "start_date": condition_data.get("start_date"),
                 "end_date": condition_data.get("end_date"),
                 "notes": condition_data.get("notes"),
@@ -117,7 +121,12 @@ def _map_report_for_frontend(report: dict) -> dict:
     out["conditions"] = conditions
     out["treatments"] = treatments
     out["symptoms"] = report.get("active_symptoms", [])
-    out["allergies"] = report.get("active_allergies", [])
+    allergies = []
+    for allergy in report.get("active_allergies", []):
+        allergy_data = allergy.copy()
+        allergy_data["status"] = _translated("status", allergy_data.get("status"))
+        allergies.append(allergy_data)
+    out["allergies"] = allergies
     out["surgeries"] = report.get("surgeries", [])
 
     return out
