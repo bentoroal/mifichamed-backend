@@ -1,182 +1,436 @@
+````markdown
 # MiFichaMed Backend
 
-## Descripción
+Backend de **MiFichaMed**, una API REST desarrollada con **FastAPI** para la gestión de fichas médicas personales. El sistema permite a cada usuario mantener un historial clínico digital con autenticación segura, administración de enfermedades, síntomas, tratamientos, alergias, cirugías, perfil médico e informes clínicos.
 
-MiFichaMed es una aplicación backend desarrollada con FastAPI para la gestión de información médica personal. Permite a los usuarios registrar y seguir sus condiciones médicas, síntomas, tratamientos, cirugías, alergias y más, proporcionando una ficha médica digital completa y personalizable.
-
-## Características Principales
-
-- **Autenticación y Autorización**: Sistema de login con JWT para usuarios registrados.
-- **Gestión de Condiciones Médicas**: Catálogo de condiciones predefinidas y personalizadas por usuario.
-- **Seguimiento de Síntomas**: Registro diario de intensidad de síntomas asociados a condiciones.
-- **Tratamientos**: Asociación de medicamentos y tratamientos a condiciones específicas.
-- **Cirugías**: Registro de cirugías realizadas, opcionalmente vinculadas a condiciones médicas.
-- **Alergias**: Seguimiento de alergias con estado (activa o en remisión).
-- **Perfil de Usuario**: Información básica del usuario.
-- **Dashboard**: Resumen y estadísticas de la información médica del usuario.
-
-## Tecnologías Utilizadas
-
-- **FastAPI**: Framework web moderno y rápido para APIs REST.
-- **SQLAlchemy**: ORM para interactuar con la base de datos.
-- **SQLite**: Base de datos utilizada (configurable para otros motores).
-- **Pydantic**: Validación de datos y serialización.
-- **JWT**: Autenticación basada en tokens.
-- **CORS**: Soporte para solicitudes desde el frontend.
-
-## Requisitos del Sistema
-
-- Python 3.8 o superior
-- pip para gestión de dependencias
-- Entorno virtual recomendado (venv)
-
-## Instalación
-
-1. **Clona el repositorio**:
-   ```bash
-   git clone <url-del-repositorio>
-   cd mifichamed-backend
-   ```
-
-2. **Crea un entorno virtual**:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # En Windows: venv\Scripts\activate
-   ```
-
-3. **Instala las dependencias**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configura la base de datos**:
-   - La aplicación crea automáticamente las tablas al iniciar.
-   - Para desarrollo, se usa SQLite por defecto.
-
-5. **Ejecuta la aplicación**:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
-
-   La API estará disponible en `http://localhost:8000`.
-
-## Uso
-
-### Documentación de la API
-
-Una vez ejecutada la aplicación, accede a `http://localhost:8000/docs` para ver la documentación interactiva generada por Swagger UI.
-
-### Endpoints Principales
-
-- **Autenticación**:
-  - `POST /auth/login`: Iniciar sesión
-  - `POST /auth/register`: Registrar nuevo usuario
-
-- **Condiciones**:
-  - `GET /conditions`: Listar condiciones disponibles
-  - `POST /conditions`: Crear condición personalizada
-
-- **Condiciones de Usuario**:
-  - `GET /user-conditions`: Listar condiciones del usuario
-  - `POST /user-conditions`: Agregar condición al perfil
-
-- **Síntomas**:
-  - `GET /user-symptoms`: Listar síntomas del usuario
-  - `POST /user-symptoms`: Registrar nuevo síntoma
-
-- **Tratamientos**:
-  - `GET /condition-treatments`: Listar tratamientos
-  - `POST /condition-treatments`: Crear tratamiento
-
-- **Cirugías**:
-  - `GET /user-surgeries`: Listar cirugías del usuario
-  - `POST /user-surgeries`: Registrar cirugía
-
-- **Alergias**:
-  - `GET /user-allergies`: Listar alergias del usuario
-  - `POST /user-allergies`: Registrar alergia
-
-- **Perfil**:
-  - `GET /user-profile`: Obtener perfil del usuario
-  - `PUT /user-profile`: Actualizar perfil
-
-- **Dashboard**:
-  - `GET /dashboard`: Resumen estadístico
-
-## Estructura del Proyecto
-
-```
-mifichamed-backend/
-├── app/
-│   ├── core/           # Configuración central (seguridad, configuración)
-│   ├── db/             # Configuración de base de datos
-│   ├── models/         # Modelos de SQLAlchemy
-│   ├── routers/        # Endpoints de la API
-│   ├── schemas/        # Esquemas Pydantic para validación
-│   ├── services/       # Lógica de negocio
-│   └── main.py         # Punto de entrada de la aplicación
-├── requirements.txt    # Dependencias del proyecto
-└── README.md          # Este archivo
-```
-
-## Configuración
-
-### Variables de Entorno
-
-Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
-
-```
-SECRET_KEY=tu_clave_secreta_aqui
-DATABASE_URL=sqlite:///./mifichamed.db
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-```
-
-### Base de Datos
-
-Por defecto, usa SQLite. Para cambiar a PostgreSQL u otro motor:
-
-1. Actualiza `DATABASE_URL` en la configuración.
-2. Instala el driver correspondiente (ej: `psycopg2` para PostgreSQL).
-3. Asegúrate de que las migraciones sean compatibles.
-
-## Desarrollo
-
-### Ejecutar Pruebas
-
-```bash
-pytest
-```
-
-### Formateo de Código
-
-```bash
-black .
-isort .
-```
-
-### Linting
-
-```bash
-flake8 .
-```
-
-## Contribución
-
-1. Fork el proyecto.
-2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`).
-3. Commit tus cambios (`git commit -am 'Agrega nueva funcionalidad'`).
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`).
-5. Abre un Pull Request.
-
-## Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
-## Contacto
-
-Para preguntas o soporte, contacta al equipo de desarrollo.
+El proyecto sigue una arquitectura modular basada en routers, servicios, modelos y esquemas, facilitando su mantenimiento y escalabilidad.
 
 ---
 
-**Nota**: Este proyecto está en desarrollo activo. Las funcionalidades pueden cambiar sin previo aviso.</content>
-<parameter name="filePath">c:\Users\bento\Desktop\Cosas\PROYECTOS IT\MiFichaMed\mifichamed-backend\README.md
+# Características
+
+- Autenticación mediante JWT.
+- Registro e inicio de sesión de usuarios.
+- Gestión del perfil clínico.
+- Administración de enfermedades.
+- Administración de síntomas.
+- Registro diario de síntomas.
+- Administración de tratamientos.
+- Administración de alergias.
+- Administración de cirugías.
+- Dashboard con resumen clínico.
+- Generación de informes médicos.
+- API REST completamente desacoplada del frontend.
+- Base de datos relacional mediante SQLAlchemy.
+- Validación de datos utilizando Pydantic.
+
+---
+
+# Tecnologías
+
+| Tecnología | Uso |
+|------------|-----|
+| Python | Lenguaje principal |
+| FastAPI | Framework REST |
+| SQLAlchemy | ORM |
+| Pydantic | Validación de datos |
+| PostgreSQL | Base de datos (producción) |
+| SQLite | Desarrollo local |
+| JWT | Autenticación |
+| Alembic | Migraciones |
+| Uvicorn | Servidor ASGI |
+| Passlib / BCrypt | Hash de contraseñas |
+| Python-Jose | Firma y validación de tokens |
+
+---
+
+# Arquitectura
+
+El backend está organizado siguiendo una arquitectura por capas.
+
+```
+Cliente
+      │
+      ▼
+ Routers (API)
+      │
+      ▼
+ Services
+      │
+      ▼
+ SQLAlchemy ORM
+      │
+      ▼
+ Base de Datos
+```
+
+Cada módulo encapsula completamente su funcionalidad mediante:
+
+- Router
+- Servicio
+- Modelo
+- Schema
+- Operaciones CRUD
+
+Esto evita dependencias innecesarias entre módulos y facilita la incorporación de nuevas funcionalidades.
+
+---
+
+# Organización del proyecto
+
+```
+app/
+
+├── auth/
+│   ├── autenticación
+│   ├── JWT
+│   └── login/registro
+│
+├── dashboard/
+│   └── resumen clínico
+│
+├── database/
+│   └── conexión SQLAlchemy
+│
+├── models/
+│   └── modelos ORM
+│
+├── schemas/
+│   └── modelos Pydantic
+│
+├── services/
+│   └── lógica de negocio
+│
+├── routers/
+│   └── endpoints REST
+│
+├── utils/
+│   └── utilidades
+│
+└── main.py
+```
+
+---
+
+# Modelo funcional
+
+El sistema gira alrededor del usuario autenticado.
+
+Cada usuario puede registrar:
+
+- Perfil personal
+- Condiciones médicas
+- Síntomas
+- Historial diario de síntomas
+- Tratamientos
+- Alergias
+- Cirugías
+
+El Dashboard obtiene información agregada de estos módulos para entregar un resumen general del estado clínico.
+
+---
+
+# Autenticación
+
+La autenticación utiliza **JWT Bearer Token**.
+
+Flujo simplificado:
+
+```
+Registro
+
+Usuario
+    │
+POST /auth/register
+    │
+Hash contraseña
+    │
+Guardar usuario
+```
+
+Posteriormente:
+
+```
+Login
+
+Usuario
+    │
+POST /auth/login
+    │
+Verificación contraseña
+    │
+Generación JWT
+    │
+Access Token
+```
+
+Los endpoints protegidos requieren:
+
+```
+Authorization: Bearer <token>
+```
+
+El usuario autenticado es obtenido mediante dependencias de FastAPI.
+
+---
+
+# Base de datos
+
+El proyecto utiliza SQLAlchemy como ORM.
+
+Durante el desarrollo puede trabajar con SQLite y en producción con PostgreSQL mediante la variable:
+
+```
+DATABASE_URL
+```
+
+La separación ORM / Pydantic permite desacoplar completamente la representación interna de la API pública.
+
+---
+
+# Principales módulos
+
+## Auth
+
+Responsable de:
+
+- Registro
+- Login
+- Hash de contraseñas
+- Validación de credenciales
+- Generación de JWT
+- Validación del usuario autenticado
+
+---
+
+## User Profile
+
+Administra la información médica básica del usuario, utilizada posteriormente por el Dashboard y los informes.
+
+---
+
+## Conditions
+
+Permite administrar enfermedades o condiciones médicas del usuario.
+
+Incluye:
+
+- catálogo
+- condiciones personalizadas
+- estado
+- fechas
+- notas
+
+---
+
+## Symptoms
+
+Gestiona los síntomas registrados por el usuario.
+
+Incluye además el registro diario para llevar seguimiento de evolución.
+
+---
+
+## Treatments
+
+Permite registrar tratamientos activos o históricos.
+
+Incluye información como:
+
+- medicamento
+- dosis
+- frecuencia
+- fechas
+- observaciones
+
+---
+
+## Allergies
+
+Permite mantener un historial de alergias del paciente.
+
+Puede utilizar tanto elementos del catálogo como registros personalizados.
+
+---
+
+## Surgeries
+
+Administra intervenciones quirúrgicas realizadas al paciente.
+
+Incluye fechas, observaciones e historial.
+
+---
+
+## Dashboard
+
+Entrega una vista consolidada de la información clínica del usuario.
+
+Agrupa información proveniente de los distintos módulos del sistema para facilitar la consulta rápida.
+
+---
+
+## Reports
+
+Genera informes médicos a partir de la información registrada por el usuario.
+
+Los reportes permiten incluir distintas secciones dependiendo de los filtros seleccionados.
+
+---
+
+# API REST
+
+La aplicación expone endpoints REST organizados por módulos.
+
+Ejemplos:
+
+```
+/auth
+
+/user-profile
+
+/dashboard
+
+/conditions
+
+/user-conditions
+
+/symptoms
+
+/user-symptoms
+
+/treatments
+
+/user-treatments
+
+/allergies
+
+/user-allergies
+
+/surgeries
+
+/user-surgeries
+
+/report
+```
+
+La API utiliza principalmente los métodos:
+
+- GET
+- POST
+- PATCH
+- DELETE
+
+---
+
+# Flujo de una petición
+
+```
+Cliente
+
+↓
+
+Router
+
+↓
+
+Validación Pydantic
+
+↓
+
+Servicio
+
+↓
+
+SQLAlchemy
+
+↓
+
+Base de datos
+
+↓
+
+Respuesta JSON
+```
+
+---
+
+# Variables de entorno
+
+El proyecto utiliza variables de entorno para la configuración.
+
+Entre ellas se encuentran:
+
+```
+DATABASE_URL
+
+SECRET_KEY
+
+ALGORITHM
+
+ACCESS_TOKEN_EXPIRE_MINUTES
+
+REFRESH_TOKEN_EXPIRE_DAYS
+```
+
+Estas variables permiten cambiar fácilmente entre entornos de desarrollo y producción.
+
+---
+
+# Seguridad
+
+El backend implementa distintas medidas de seguridad:
+
+- Contraseñas hasheadas.
+- JWT firmado.
+- Endpoints protegidos.
+- Validación de datos mediante Pydantic.
+- Separación entre modelos internos y públicos.
+- Acceso únicamente a la información del usuario autenticado.
+
+---
+
+# Instalación
+
+```bash
+git clone <repositorio>
+
+cd backend
+
+python -m venv .venv
+
+source .venv/bin/activate
+```
+
+Instalar dependencias:
+
+```bash
+pip install -r requirements.txt
+```
+
+Configurar el archivo `.env`.
+
+Ejecutar:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+---
+
+# Principios de diseño
+
+El proyecto busca mantener:
+
+- Arquitectura modular.
+- Separación de responsabilidades.
+- Reutilización de servicios.
+- Escalabilidad.
+- Código mantenible.
+- API desacoplada del frontend.
+
+---
+
+# Estado del proyecto
+
+Actualmente el backend proporciona una API REST para la administración de información clínica personal, incluyendo autenticación, historial médico, seguimiento de síntomas, tratamientos, alergias, cirugías, perfil del paciente y generación de informes, constituyendo el núcleo de la plataforma MiFichaMed.
+````
