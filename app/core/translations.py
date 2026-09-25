@@ -38,6 +38,17 @@ STATUS_TRANSLATIONS = {
     "remission": "Remisión",
 }
 
+# Traducciones de tipos de examen
+EXAM_TYPE_TRANSLATIONS = {
+    "blood": "Análisis de sangre",
+    "urine": "Orina",
+    "stool": "Heces",
+    "imaging": "Imágenes",
+    "procedure": "Procedimiento",
+    "pathology": "Patología",
+    "other": "Otro",
+}
+
 # Traducciones de estados de alergias
 ALLERGY_STATUS_TRANSLATIONS = {
     "active": "Activa",
@@ -63,6 +74,11 @@ def translate_value(field_name: str, value: str | None) -> str | None:
     if field_name in HABIT_TRANSLATIONS:
         return HABIT_TRANSLATIONS[field_name].get(value, value)
     
+    # Buscar en traducciones de tipos de examen
+    if field_name == "exam_type":
+        if value in EXAM_TYPE_TRANSLATIONS:
+            return EXAM_TYPE_TRANSLATIONS[value]
+
     # Buscar en traducciones de estados
     if field_name == "status":
         # Para condiciones
@@ -71,7 +87,7 @@ def translate_value(field_name: str, value: str | None) -> str | None:
         # Para alergias
         if value in ALLERGY_STATUS_TRANSLATIONS:
             return ALLERGY_STATUS_TRANSLATIONS[value]
-    
+
     return value
 
 

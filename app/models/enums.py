@@ -49,3 +49,13 @@ class PhysicalActivityEnum(str, enum.Enum):
     MODERATE = "moderate"
     INTENSE = "intense"
 
+
+class ExamType(str, enum.Enum):
+    BLOOD = "blood"
+    URINE = "urine"
+    STOOL = "stool"
+    IMAGING = "imaging"
+    PROCEDURE = "procedure"
+    PATHOLOGY = "pathology"
+    OTHER = "other"
+

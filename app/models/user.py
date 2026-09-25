@@ -16,3 +16,4 @@ class User(Base):
     surgeries = relationship("UserSurgery", back_populates="user", cascade="all, delete")
     allergies = relationship("UserAllergy", back_populates="user", cascade="all, delete")
     profile = relationship("UserProfile", back_populates="user", uselist=False)
+    exam_results = relationship("ExamResult", back_populates="user", cascade="all, delete")

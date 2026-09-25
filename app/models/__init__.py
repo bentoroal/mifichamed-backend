@@ -11,3 +11,4 @@ from .allergy import AllergyCatalog
 from .user_allergy import UserAllergy
 from .surgery import SurgeryCatalog
 from .user_surgery import UserSurgery
+from .exam_result import ExamResult
